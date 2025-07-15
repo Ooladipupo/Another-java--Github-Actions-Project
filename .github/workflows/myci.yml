@@ -129,29 +129,35 @@ jobs:
         tags: ola22/testing:July2025
         file: ./Dockerfile
 
-    - name: Docker Build and Upload to AWS ECR
-      uses: vitr/actions-build-and-upload-to-ecs@v1.0.0
+
+
+  ECR-build-and-push:
+    runs-on: security-scans
+    needs: build_project_and_sonar_scan
+    
+    steps:
+    
+    - uses: actions/checkout@v4
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4.1.0
       with:
-    # The AWS access key id
-        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    # The AWS secret access key
-        secret_access_key: ${{ secrets.AWS_SECRET_KEY_ID }}
-    # AWS Account ID
-        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-    # Name of your ECR repository
-        repo: bobo
-    # The AWS region
-        region: eu-west-2
-    # Set this to true to create the repository if it does not already exist
-    #create_repo: # optional
-    # Comma-separated string of ECR image tags
-    #tags: # optional, default is latest
-    # Name of Dockerfile to use
-        dockerfile: ola22/testing
-    # Extra flags to pass to docker build (see docs.docker.com/engine/reference/commandline/build)
-    #extra_build_args: # optional, default is 
-    # Path to Dockerfile, defaults to the working directory
-    #path: # optional, default is .
+        aws-region: eu-west-2
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: bobo
+          IMAGE_TAG: july152025
+      run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
+
 
 #  deploy_to_kubernetes:
 #    runs-on: self-hosted
@@ -183,6 +189,3 @@ jobs:
  #       kubectl apply -f ds.yml
 
 
-
-
-          
