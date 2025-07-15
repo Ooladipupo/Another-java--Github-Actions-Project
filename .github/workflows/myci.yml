@@ -129,6 +129,30 @@ jobs:
         tags: ola22/testing:July2025
         file: ./Dockerfile
 
+    - name: Docker Build and Upload to AWS ECR
+      uses: vitr/actions-build-and-upload-to-ecs@v1.0.0
+      with:
+    # The AWS access key id
+        access_key_id: ${{ AWS_ACCESS_KEY_ID }}
+    # The AWS secret access key
+        secret_access_key: ${{ AWS_SECRET_KEY_ID }}
+    # AWS Account ID
+        account_id: ${{ AWS_ACCOUNT_ID }}
+    # Name of your ECR repository
+        repo: bobo
+    # The AWS region
+        region: eu-west-2
+    # Set this to true to create the repository if it does not already exist
+    #create_repo: # optional
+    # Comma-separated string of ECR image tags
+    #tags: # optional, default is latest
+    # Name of Dockerfile to use
+        dockerfile: ola22/testing
+    # Extra flags to pass to docker build (see docs.docker.com/engine/reference/commandline/build)
+    #extra_build_args: # optional, default is 
+    # Path to Dockerfile, defaults to the working directory
+    #path: # optional, default is .
+
 #  deploy_to_kubernetes:
 #    runs-on: self-hosted
 #    needs: buils_docker_image_and_push
@@ -157,3 +181,8 @@ jobs:
  #   - name: Deploy to EKS
  #     run: |
  #       kubectl apply -f ds.yml
+
+
+
+
+          
