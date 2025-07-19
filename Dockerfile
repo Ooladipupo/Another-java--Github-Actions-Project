@@ -8,7 +8,7 @@ RUN ls
 ENV APP_HOME /usr/src/app
 
 #copying our jar file to the workdir path, as you will see in line 13
-COPY app/*.jar $APP_HOME/app.jar
+COPY ./*.jar $APP_HOME/app.jar
 
 WORKDIR $APP_HOME
 
