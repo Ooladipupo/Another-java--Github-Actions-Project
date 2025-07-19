@@ -127,7 +127,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ola22/testing:19/07/2025
+        tags: ola22/testing:july192025
         file: ./Dockerfile
 
 
@@ -154,7 +154,7 @@ jobs:
       env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: bobo
-          IMAGE_TAG: 19/07/2025
+          IMAGE_TAG: july192025
       run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
