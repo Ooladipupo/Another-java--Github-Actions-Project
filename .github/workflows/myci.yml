@@ -169,6 +169,28 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
 
 
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+
+      - name: Docker Login to Private Registry
+        env:
+          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+
+      - name: Scan Private Image with Trivy
+        env:
+          IMAGE_NAME: ola22/testing:${{ github.sha }}
+        run: |
+          ./trivy image --severity HIGH,CRITICAL --exit-code 0 "$IMAGE_NAME"
+
+
+  
 #  deploy_to_kubernetes:
 #    runs-on: self-hosted
 #    needs: buils_docker_image_and_push
