@@ -199,7 +199,7 @@ jobs:
         env:
           IMAGE_NAME: ola22/testing:${{ github.sha }}
         run: |
-          ./trivy image --severity HIGH,CRITICAL --exit-code 0 "$IMAGE_NAME"
+          trivy image --severity HIGH,CRITICAL --exit-code 0 "$IMAGE_NAME"
 
 
   
