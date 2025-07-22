@@ -171,23 +171,8 @@ jobs:
 
   trivy-scan:
     runs-on: ubuntu-latest
-    steps:
-
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install wget
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.50.1_Linux-64bit.deb
-          sudo dpkg -i trivy_0.50.1_Linux-64bit.deb
-          
-      - name: Verify Trivy Installation
-        run: trivy --version
-
-        
-     # - name: Install Trivy
-     #   run: |
-     #     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
-
+    steps:      
+     
       - name: Docker Login to Private Registry
         env:
           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
@@ -195,11 +180,22 @@ jobs:
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 
-      - name: Scan Private Image with Trivy
-        env:
-          IMAGE_NAME: ola22/testing:${{ github.sha }}
-        run: |
-          trivy image --severity HIGH,CRITICAL --exit-code 0 "$IMAGE_NAME"
+     # - name: Scan Private Image with Trivy
+      #  env:
+       #   IMAGE_NAME: ola22/testing:${{ github.sha }}
+       # run: |
+       #   trivy image --severity HIGH,CRITICAL --exit-code 0 "$IMAGE_NAME"
+          
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ola22/testing:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          #vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'  
 
 
   
