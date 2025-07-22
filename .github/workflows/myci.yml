@@ -151,7 +151,7 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: 'ola22/testing:${{ github.sha }}'
+        image-ref: 'ola22/testing:sha-${{ github.sha }}'
         format: 'table'
         exit-code: '0'
         ignore-unfixed: false
