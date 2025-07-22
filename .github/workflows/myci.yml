@@ -193,7 +193,7 @@ jobs:
           image-ref: 'ola22/testing:${{ github.sha }}'
           format: 'table'
           exit-code: '0'
-          ignore-unfixed: true
+          ignore-unfixed: false
           #vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'  
 
